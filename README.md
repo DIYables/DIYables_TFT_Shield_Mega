@@ -19,7 +19,7 @@ Product Link
 Features  
 ----------------------------  
 * 16-bit parallel data bus for maximum throughput
-* Direct register access on Mega 2560 and Due for fastest possible speed
+* Direct register access on Mega 2560, Due, and Giga R1 WiFi for fastest possible speed
 * Works with all Arduino Mega form factor boards (Mega, Due, Giga, etc.)
 
 
@@ -44,29 +44,29 @@ Tutorials
 16-bit Parallel Pin Mapping
 ----------------------------
 
-| Shield Pin | Function   | Mega 2560 Pin | Port (Mega)  |
-|------------|------------|:-------------:|--------------|
-| DB0        | Data bit 0 | 37            | PC0          |
-| DB1        | Data bit 1 | 36            | PC1          |
-| DB2        | Data bit 2 | 35            | PC2          |
-| DB3        | Data bit 3 | 34            | PC3          |
-| DB4        | Data bit 4 | 33            | PC4          |
-| DB5        | Data bit 5 | 32            | PC5          |
-| DB6        | Data bit 6 | 31            | PC6          |
-| DB7        | Data bit 7 | 30            | PC7          |
-| DB8        | Data bit 8 | 22            | PA0          |
-| DB9        | Data bit 9 | 23            | PA1          |
-| DB10       | Data bit 10| 24            | PA2          |
-| DB11       | Data bit 11| 25            | PA3          |
-| DB12       | Data bit 12| 26            | PA4          |
-| DB13       | Data bit 13| 27            | PA5          |
-| DB14       | Data bit 14| 28            | PA6          |
-| DB15       | Data bit 15| 29            | PA7          |
-| CS         | Chip Select| 40            | PG1          |
-| RS (CD)    | Cmd/Data   | 38            | PD7          |
-| WR         | Write      | 39            | PG2          |
-| RD         | Read       | 44            | PL5          |
-| RST        | Reset      | 41            | PG0          |
+| Shield Pin | Function   | Arduino Pin | Mega 2560 Port | Due Port | Giga Port |
+|------------|------------|:-----------:|----------------|----------|-----------|
+| DB0        | Data bit 0 | 37          | PC0            | PC5      | PJ6       |
+| DB1        | Data bit 1 | 36          | PC1            | PC4      | PK6       |
+| DB2        | Data bit 2 | 35          | PC2            | PC3      | PJ5       |
+| DB3        | Data bit 3 | 34          | PC3            | PC2      | PK5       |
+| DB4        | Data bit 4 | 33          | PC4            | PC1      | PJ4       |
+| DB5        | Data bit 5 | 32          | PC5            | PD10     | PK4       |
+| DB6        | Data bit 6 | 31          | PC6            | PA7      | PJ3       |
+| DB7        | Data bit 7 | 30          | PC7            | PD9      | PK3       |
+| DB8        | Data bit 8 | 22          | PA0            | PB26     | PJ12      |
+| DB9        | Data bit 9 | 23          | PA1            | PA14     | PG13      |
+| DB10       | Data bit 10| 24          | PA2            | PA15     | PG12      |
+| DB11       | Data bit 11| 25          | PA3            | PD0      | PJ0       |
+| DB12       | Data bit 12| 26          | PA4            | PD1      | PJ14      |
+| DB13       | Data bit 13| 27          | PA5            | PD2      | PJ1       |
+| DB14       | Data bit 14| 28          | PA6            | PD3      | PJ15      |
+| DB15       | Data bit 15| 29          | PA7            | PD6      | PJ2       |
+| CS         | Chip Select| 40          | PG1            | PC8      | PE6       |
+| RS (CD)    | Cmd/Data   | 38          | PD7            | PC6      | PJ7       |
+| WR         | Write      | 39          | PG2            | PC7      | PI14      |
+| RD         | Read       | 44          | PL5            | PC19     | PG10      |
+| RST        | Reset      | 41          | PG0            | PC9      | PK7       |
 
 
 Supported and Tested Hardware
@@ -76,7 +76,7 @@ Supported and Tested Hardware
 |-------------------------|:------:|---------------------------|-----------|
 | Arduino Mega 2560       |   ✅   | Direct register access    | Very fast |
 | Arduino Due             |   ✅   | Direct register access    | Very fast |
-| Arduino Giga R1 WiFi    |   ✅   | Arduino API (digitalWrite)| Fast      |
+| Arduino Giga R1 WiFi    |   ✅   | Direct register access    | Very fast |
 | Other Mega form factor  |   —    | Arduino API (digitalWrite)| Moderate  |
 
 **Note**: This library is specifically designed for the 16-bit parallel TFT shield for Mega form factor boards. If you have an 8-bit TFT shield for Uno form factor, please use the [DIYables TFT Shield Library](https://github.com/DIYables/DIYables_TFT_Shield) instead.

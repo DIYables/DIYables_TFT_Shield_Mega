@@ -158,17 +158,104 @@
 #define WR_STROBE do { PIN_LOW(WR_PORT, WR_PIN); PIN_HIGH(WR_PORT, WR_PIN); } while(0)
 
 #elif defined(ARDUINO_GIGA)
-// Arduino Giga R1 WiFi (STM32H747XI) — Mega form factor, uses Arduino API for 16-bit data bus
-#define ARDUINO_API_USED
+// Arduino Giga R1 WiFi (STM32H747XI) — Mega form factor
+// Direct register access for 16-bit parallel data bus
+//
+// Data bus mapping (from GIGA variant.cpp):
+//   DB0=pin37→PJ6,  DB1=pin36→PK6,  DB2=pin35→PJ5,  DB3=pin34→PK5
+//   DB4=pin33→PJ4,  DB5=pin32→PK4,  DB6=pin31→PJ3,  DB7=pin30→PK3
+//   DB8=pin22→PJ12, DB9=pin23→PG13, DB10=pin24→PG12, DB11=pin25→PJ0
+//   DB12=pin26→PJ14,DB13=pin27→PJ1, DB14=pin28→PJ15, DB15=pin29→PJ2
+// Control:
+//   CS=pin40→PE6, CD=pin38→PJ7, WR=pin39→PI14, RD=pin44→PG10, RST=pin41→PK7
 
-#define WRITE_16(x) do {} while(0) // placeholder, not used in API mode
-#define WRITE_8(x)  do {} while(0) // placeholder, not used in API mode
-#define SET_DATA_DIR_OUT() do {} while(0)
-#define SET_CONTROL_DIR_OUT() do {} while(0)
-#define PIN_LOW(p, b)  do {} while(0)
-#define PIN_HIGH(p, b) do {} while(0)
-#define PIN_OUTPUT(p, b) do {} while(0)
-#define WR_STROBE do {} while(0)
+// Control pin port/bit definitions
+#define RD_PORT    GPIOG
+#define RD_PIN     10      // PG10, pin 44
+#define WR_PORT    GPIOI
+#define WR_PIN     14      // PI14, pin 39
+#define CD_PORT    GPIOJ
+#define CD_PIN     7       // PJ7, pin 38
+#define CS_PORT    GPIOE
+#define CS_PIN     6       // PE6, pin 40
+#define RESET_PORT GPIOK
+#define RESET_PIN  7       // PK7, pin 41
+
+// Data bus pin masks per GPIO port (GPIOJ: 10 pins, GPIOK: 4 pins, GPIOG: 2 pins)
+#define GIGA_JMASK ((1UL<<0)|(1UL<<1)|(1UL<<2)|(1UL<<3)|(1UL<<4)|(1UL<<5)|(1UL<<6)|(1UL<<12)|(1UL<<14)|(1UL<<15))
+#define GIGA_KMASK ((1UL<<3)|(1UL<<4)|(1UL<<5)|(1UL<<6))
+#define GIGA_GMASK ((1UL<<12)|(1UL<<13))
+
+// Write 16-bit value to data bus using BSRR (atomic set/clear in one write per port)
+#define WRITE_16(x) do { \
+  uint32_t _jv = \
+    (((x) & (1<<0)) << 6)   | (((x) & (1<<2)) << 3)   | \
+    ((x) & (1<<4))           | (((x) & (1<<6)) >> 3)   | \
+    (((x) & (1<<8)) << 4)   | (((x) & (1<<11)) >> 11)  | \
+    (((x) & (1<<12)) << 2)  | (((x) & (1<<13)) >> 12)  | \
+    (((x) & (1<<14)) << 1)  | (((x) & (1<<15)) >> 13); \
+  uint32_t _kv = \
+    (((x) & (1<<1)) << 5)   | (((x) & (1<<3)) << 2)   | \
+    (((x) & (1<<5)) >> 1)   | (((x) & (1<<7)) >> 4); \
+  uint32_t _gv = \
+    (((x) & (1<<9)) << 4)   | (((x) & (1<<10)) << 2); \
+  GPIOJ->BSRR = _jv | ((GIGA_JMASK & ~_jv) << 16); \
+  GPIOK->BSRR = _kv | ((GIGA_KMASK & ~_kv) << 16); \
+  GPIOG->BSRR = _gv | ((GIGA_GMASK & ~_gv) << 16); \
+} while(0)
+
+// Write 8-bit value to data bus (command/parameter, only low byte; high byte cleared)
+#define WRITE_8(x) do { \
+  uint32_t _jv = \
+    (((x) & (1<<0)) << 6) | (((x) & (1<<2)) << 3) | \
+    ((x) & (1<<4))         | (((x) & (1<<6)) >> 3); \
+  uint32_t _kv = \
+    (((x) & (1<<1)) << 5) | (((x) & (1<<3)) << 2) | \
+    (((x) & (1<<5)) >> 1) | (((x) & (1<<7)) >> 4); \
+  GPIOJ->BSRR = _jv | ((GIGA_JMASK & ~_jv) << 16); \
+  GPIOK->BSRR = _kv | ((GIGA_KMASK & ~_kv) << 16); \
+  GPIOG->BSRR = GIGA_GMASK << 16; \
+} while(0)
+
+#define SET_DATA_DIR_OUT() do { \
+  uint32_t _m; \
+  /* Enable GPIO clocks for ports E, G, I, J, K */ \
+  RCC->AHB4ENR |= (1UL<<4)|(1UL<<6)|(1UL<<8)|(1UL<<9)|(1UL<<10); \
+  _m = RCC->AHB4ENR; (void)_m; /* read-back delay for clock stabilization */ \
+  /* GPIOJ: pins 0,1,2,3,4,5,6,12,14,15 as output (MODER=01) */ \
+  _m = GPIOJ->MODER; _m &= ~0xF3003FFFUL; _m |= 0x51001555UL; GPIOJ->MODER = _m; \
+  /* GPIOK: pins 3,4,5,6 as output */ \
+  _m = GPIOK->MODER; _m &= ~0x00003FC0UL; _m |= 0x00001540UL; GPIOK->MODER = _m; \
+  /* GPIOG: pins 12,13 as output */ \
+  _m = GPIOG->MODER; _m &= ~0x0F000000UL; _m |= 0x05000000UL; GPIOG->MODER = _m; \
+  /* Set data pins to very high speed (OSPEEDR=11) */ \
+  GPIOJ->OSPEEDR |= 0xF3003FFFUL; \
+  GPIOK->OSPEEDR |= 0x00003FC0UL; \
+  GPIOG->OSPEEDR |= 0x0F000000UL; \
+} while(0)
+
+#define SET_CONTROL_DIR_OUT() do { \
+  uint32_t _m; \
+  /* CD=PJ7 as output */ \
+  _m = GPIOJ->MODER; _m &= ~(3UL << 14); _m |= (1UL << 14); GPIOJ->MODER = _m; \
+  /* WR=PI14 as output, very high speed */ \
+  _m = GPIOI->MODER; _m &= ~(3UL << 28); _m |= (1UL << 28); GPIOI->MODER = _m; \
+  GPIOI->OSPEEDR |= (3UL << 28); \
+  /* CS=PE6 as output */ \
+  _m = GPIOE->MODER; _m &= ~(3UL << 12); _m |= (1UL << 12); GPIOE->MODER = _m; \
+  /* RD=PG10 as output */ \
+  _m = GPIOG->MODER; _m &= ~(3UL << 20); _m |= (1UL << 20); GPIOG->MODER = _m; \
+  /* RST=PK7 as output */ \
+  _m = GPIOK->MODER; _m &= ~(3UL << 14); _m |= (1UL << 14); GPIOK->MODER = _m; \
+} while(0)
+
+#define PIN_LOW(p, b)  (p)->BSRR = (1UL << ((b) + 16))
+#define PIN_HIGH(p, b) (p)->BSRR = (1UL << (b))
+#define PIN_OUTPUT(p, b) do { \
+  uint32_t _pos = (b) * 2; \
+  (p)->MODER = ((p)->MODER & ~(3UL << _pos)) | (1UL << _pos); \
+} while(0)
+#define WR_STROBE do { PIN_LOW(WR_PORT, WR_PIN); __asm__ volatile("nop"); PIN_HIGH(WR_PORT, WR_PIN); } while(0)
 
 #else
 // Fallback for other boards with Mega form factor — uses Arduino API (digitalWrite)

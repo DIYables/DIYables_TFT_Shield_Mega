@@ -27,7 +27,6 @@ void setup() {
   Serial.println(F("Arduino TFT LCD Display"));
 
   TFT_display.begin();
-  delay(2000);
 
   SCREEN_WIDTH = TFT_display.width();
   SCREEN_HEIGHT = TFT_display.height();
@@ -35,20 +34,10 @@ void setup() {
   int x = (SCREEN_WIDTH - img_width) / 2;
   int y = (SCREEN_HEIGHT - img_height) / 2;
 
-  unsigned long t0 = millis();
   TFT_display.fillScreen(WHITE);
-  unsigned long t1 = millis();
   TFT_display.drawRGBBitmap(x, y, myBitmap, img_width, img_height);
-  unsigned long t2 = millis();
-
-  Serial.print(F("fillScreen: "));
-  Serial.print(t1 - t0);
-  Serial.println(F(" ms"));
-  Serial.print(F("drawRGBBitmap: "));
-  Serial.print(t2 - t1);
-  Serial.println(F(" ms"));
 }
-
+ 
 void loop(void) {
   delay(2000);
   TFT_display.invertDisplay(true);
