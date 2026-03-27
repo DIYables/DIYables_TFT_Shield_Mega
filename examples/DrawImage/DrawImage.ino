@@ -1,0 +1,58 @@
+/*
+   Created by DIYables
+
+   This example code is in the public domain
+
+   Product page:
+   - http://diyables.io/tft-shield-mega
+*/
+
+#include <DIYables_TFT_Shield_Mega.h>
+#include "bitmap.h"
+
+#define WHITE     DIYables_TFT::colorRGB(255, 255, 255)
+
+DIYables_TFT_Shield_Mega TFT_display;
+//DIYables_TFT_Shield_Mega TFT_display(8, 9, 2, 3, 4, 5, 6, 7, A0, A1, A2, A3, A4);
+
+int img_width = 120;
+int img_height = 53;
+
+uint16_t SCREEN_WIDTH;
+uint16_t SCREEN_HEIGHT;
+
+void setup() {
+  Serial.begin(9600);
+
+  Serial.println(F("Arduino TFT LCD Display"));
+
+  TFT_display.begin();
+  delay(2000);
+
+  SCREEN_WIDTH = TFT_display.width();
+  SCREEN_HEIGHT = TFT_display.height();
+
+  int x = (SCREEN_WIDTH - img_width) / 2;
+  int y = (SCREEN_HEIGHT - img_height) / 2;
+
+  unsigned long t0 = millis();
+  TFT_display.fillScreen(WHITE);
+  unsigned long t1 = millis();
+  TFT_display.drawRGBBitmap(x, y, myBitmap, img_width, img_height);
+  unsigned long t2 = millis();
+
+  Serial.print(F("fillScreen: "));
+  Serial.print(t1 - t0);
+  Serial.println(F(" ms"));
+  Serial.print(F("drawRGBBitmap: "));
+  Serial.print(t2 - t1);
+  Serial.println(F(" ms"));
+}
+
+void loop(void) {
+  delay(2000);
+  TFT_display.invertDisplay(true);
+  
+  delay(2000);
+  TFT_display.invertDisplay(false);
+}

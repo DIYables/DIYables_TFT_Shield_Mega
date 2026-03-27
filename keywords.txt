@@ -1,0 +1,33 @@
+#######################################
+# Syntax Coloring Map For DIYables_TFT_Shield_Mega
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+DIYables_TFT_Shield_Mega	KEYWORD1
+DIYables_TFT_ILI9486_Shield_Mega	KEYWORD1
+DIYables_TFT	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+fillScreen	KEYWORD2
+fillRect	KEYWORD2
+drawPixel	KEYWORD2
+drawFastHLine	KEYWORD2
+drawFastVLine	KEYWORD2
+setRotation	KEYWORD2
+invertDisplay	KEYWORD2
+drawRGBBitmap	KEYWORD2
+pushColors	KEYWORD2
+setAddrWindow	KEYWORD2
+colorRGB	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
