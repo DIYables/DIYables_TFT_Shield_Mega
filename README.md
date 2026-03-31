@@ -74,9 +74,10 @@ Supported and Tested Hardware
 
 | Board                   | Tested | Mode                      | Speed     |
 |-------------------------|:------:|---------------------------|-----------|
-| Arduino Mega 2560       |   ✅   | Direct register access    | Very fast |
+| Arduino Mega            |   ✅   | Direct register access    | Very fast |
+| [DIYables MEGA2560 R3 *(works like Arduino Mega 2560 Rev3)*](https://diyables.io/atmega2560-board) |   ✅   | Direct register access    | Very fast |
 | Arduino Due             |   ✅   | Direct register access    | Very fast |
-| Arduino Giga R1 WiFi    |   ✅   | Direct register access    | Very fast |
+| Arduino Giga            |   ✅   | Direct register access    | Very fast |
 | Other Mega form factor  |   —    | Arduino API (digitalWrite)| Moderate  |
 
 **Note**: This library is specifically designed for the 16-bit parallel TFT shield for Mega form factor boards. If you have an 8-bit TFT shield for Uno form factor, please use the [DIYables TFT Shield Library](https://github.com/DIYables/DIYables_TFT_Shield) instead.
