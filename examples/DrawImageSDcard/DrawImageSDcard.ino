@@ -5,6 +5,10 @@
 
    Product page:
    - http://diyables.io/tft-shield-mega
+
+   NOTE: Due to the slow SPI speed, drawing images from the SD card is slow.
+   It is recommended to embed the image directly in the code for better performance.
+   See the DrawImage example for details.
 */
 
 #include <DIYables_TFT_Shield_Mega.h>
@@ -12,10 +16,10 @@
 
 #define WHITE     DIYables_TFT::colorRGB(255, 255, 255)
 
-#define BUFFPIXEL 20  // Buffer size remains the same
+#define BUFFPIXEL 240  // Number of pixels to buffer (240 pixels * 3 bytes per pixel = 720 bytes)
 
 DIYables_TFT_Shield_Mega TFT_display;
-#define SD_CS 10
+#define SD_CS 53  // Default SS pin on Arduino Mega
 
 File bmpFile;
 uint16_t SCREEN_WIDTH;
