@@ -14,13 +14,14 @@ DIYables_TFT_ILI9486_Shield_Mega::DIYables_TFT_ILI9486_Shield_Mega()
 DIYables_TFT_ILI9486_Shield_Mega::DIYables_TFT_ILI9486_Shield_Mega(
   uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
   uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
+  uint8_t d8, uint8_t d9, uint8_t d10, uint8_t d11,
+  uint8_t d12, uint8_t d13, uint8_t d14, uint8_t d15,
   uint8_t rd, uint8_t wr, uint8_t cd, uint8_t cs, uint8_t rst)
   : Adafruit_GFX(320, 480) {
-  // 8-pin constructor: maps to low byte of 16-bit bus, high byte pins default
-  _d[0] = d0; _d[1] = d1; _d[2] = d2; _d[3] = d3;
-  _d[4] = d4; _d[5] = d5; _d[6] = d6; _d[7] = d7;
-  _d[8]  = D8_PIN;  _d[9]  = D9_PIN;  _d[10] = D10_PIN; _d[11] = D11_PIN;
-  _d[12] = D12_PIN; _d[13] = D13_PIN; _d[14] = D14_PIN; _d[15] = D15_PIN;
+  _d[0] = d0;  _d[1] = d1;  _d[2] = d2;  _d[3] = d3;
+  _d[4] = d4;  _d[5] = d5;  _d[6] = d6;  _d[7] = d7;
+  _d[8] = d8;  _d[9] = d9;  _d[10] = d10; _d[11] = d11;
+  _d[12] = d12; _d[13] = d13; _d[14] = d14; _d[15] = d15;
   _rd = rd; _wr = wr; _cd = cd; _cs = cs; _rst = rst;
   _useAPI = true;
 }

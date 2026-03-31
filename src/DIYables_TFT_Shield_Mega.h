@@ -277,6 +277,8 @@ public:
   DIYables_TFT_ILI9486_Shield_Mega();
   DIYables_TFT_ILI9486_Shield_Mega(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
                                uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
+                               uint8_t d8, uint8_t d9, uint8_t d10, uint8_t d11,
+                               uint8_t d12, uint8_t d13, uint8_t d14, uint8_t d15,
                                uint8_t rd, uint8_t wr, uint8_t cd, uint8_t cs, uint8_t rst);
   void begin();
   void fillScreen(uint16_t color) override;
